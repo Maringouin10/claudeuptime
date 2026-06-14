@@ -19,6 +19,7 @@ it never raises on unexpected markup, it just returns whatever it could extract
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import re
 import unicodedata
@@ -183,11 +184,27 @@ class CobaClient:
                     # dropped rather than a hard block.
                     raise CobaAuthError(f"http_{resp.status}")
                 resp.raise_for_status()
-                return await resp.text()
+                # ColNET serves classic-ASP French pages, often as windows-1252
+                # without a reliable charset header, so decode defensively
+                # instead of letting resp.text() raise UnicodeDecodeError.
+                return self._decode(await resp.read(), resp.charset)
         except CobaError:
             raise
-        except aiohttp.ClientError as err:
+        except (aiohttp.ClientError, asyncio.TimeoutError) as err:
             raise CobaConnectionError(str(err)) from err
+
+    @staticmethod
+    def _decode(raw: bytes, charset: str | None) -> str:
+        candidates: list[str] = []
+        if charset:
+            candidates.append(charset)
+        candidates += ["utf-8", "cp1252", "iso-8859-1"]
+        for enc in candidates:
+            try:
+                return raw.decode(enc)
+            except (UnicodeDecodeError, LookupError):
+                continue
+        return raw.decode("utf-8", errors="replace")
 
     # ------------------------------------------------------------------ #
     # Login parsing

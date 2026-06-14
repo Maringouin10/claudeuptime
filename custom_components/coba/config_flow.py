@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import voluptuous as vol
@@ -23,6 +24,8 @@ from .const import (
     DOMAIN,
     MIN_SCAN_INTERVAL_MINUTES,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 USER_SCHEMA = vol.Schema(
     {
@@ -64,6 +67,7 @@ class CobaConfigFlow(ConfigFlow, domain=DOMAIN):
             except CobaConnectionError:
                 errors["base"] = "cannot_connect"
             except Exception:  # noqa: BLE001
+                _LOGGER.exception("Unexpected error connecting to the COBA portal")
                 errors["base"] = "unknown"
             else:
                 await self.async_set_unique_id(
@@ -106,6 +110,7 @@ class CobaConfigFlow(ConfigFlow, domain=DOMAIN):
             except CobaConnectionError:
                 errors["base"] = "cannot_connect"
             except Exception:  # noqa: BLE001
+                _LOGGER.exception("Unexpected error connecting to the COBA portal")
                 errors["base"] = "unknown"
             else:
                 self.hass.config_entries.async_update_entry(
