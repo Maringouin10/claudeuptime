@@ -1,0 +1,16 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Claude Status Monitor",
+        "description": "Add Claude AI status monitoring to Home Assistant. No credentials required."
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to reach the Claude status page. Check your internet connection."
+    },
+    "abort": {
+      "already_configured": "Claude Status is already configured."
+    }
+  }
+}

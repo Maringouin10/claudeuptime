@@ -1,0 +1,11 @@
+{
+  "domain": "claude_status",
+  "name": "Claude Status",
+  "codeowners": ["@Maringouin10"],
+  "config_flow": true,
+  "documentation": "https://github.com/Maringouin10/claudeuptime",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "version": "1.0.0"
+}
