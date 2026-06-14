@@ -26,7 +26,7 @@ class ClaudeStatusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(
         self, user_input: dict | None = None
     ) -> config_entries.FlowResult:
-        await self.async_set_unique_id(DOMAIN)
+        await self.async_set_unique_id(DOMAIN, raise_on_progress=False)
         self._abort_if_unique_id_configured()
 
         errors: dict[str, str] = {}
