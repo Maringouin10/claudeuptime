@@ -37,3 +37,16 @@ Copy the `custom_components/claude_status` folder into your Home Assistant `cust
 
 - Home Assistant 2023.3.0 or newer
 - Internet access to reach `status.claude.com`
+
+---
+
+## Also in this repository: COBA / ColNET integration
+
+A second, independent integration (`custom_components/coba`) connects to the
+**COBA / ColNET** student portal (cégeps/collèges, Québec) using your **URL**,
+**username** and **password**, and exposes: messages received, last message,
+last grade, the next 5 courses, and the last follow-up.
+
+See [`custom_components/coba/README.md`](custom_components/coba/README.md) for
+details. Note: because HACS manages only one integration per repository, COBA is
+best installed manually or moved to its own repository.
