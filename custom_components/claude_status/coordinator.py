@@ -7,7 +7,7 @@ import aiohttp
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DOMAIN, SCAN_INTERVAL_SECONDS, STATUS_API_URL
+from .const import DOMAIN, INCIDENTS_API_URL, SCAN_INTERVAL_SECONDS, STATUS_API_URL
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,10 +23,25 @@ class ClaudeStatusCoordinator(DataUpdateCoordinator):
         self._session = session
 
     async def _async_update_data(self) -> dict:
-        timeout = aiohttp.ClientTimeout(total=10)
+        timeout = aiohttp.ClientTimeout(total=15)
         try:
-            async with self._session.get(STATUS_API_URL, timeout=timeout) as response:
-                response.raise_for_status()
-                return await response.json()
+            async with self._session.get(STATUS_API_URL, timeout=timeout) as resp:
+                resp.raise_for_status()
+                summary = await resp.json()
         except aiohttp.ClientError as err:
             raise UpdateFailed(f"Error fetching Claude status: {err}") from err
+
+        try:
+            async with self._session.get(
+                INCIDENTS_API_URL,
+                timeout=timeout,
+                params={"page[per_page]": 100},
+            ) as resp:
+                resp.raise_for_status()
+                incidents_data = await resp.json()
+            summary["all_incidents"] = incidents_data.get("incidents", [])
+        except aiohttp.ClientError:
+            _LOGGER.warning("Could not fetch Claude incident history; uptime sensors unavailable")
+            summary["all_incidents"] = []
+
+        return summary
