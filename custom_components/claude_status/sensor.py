@@ -26,7 +26,52 @@ def _parse_dt(value: str | None) -> datetime | None:
         return None
 
 
-def _uptime_pct(incidents: list[dict], days: int, component_id: str | None = None) -> float | None:
+_DEGRADED = frozenset(
+    ("degraded_performance", "partial_outage", "major_outage", "under_maintenance")
+)
+
+
+def _incident_has_downtime(
+    incident: dict,
+    component_id: str | None = None,
+    component_name: str | None = None,
+) -> bool:
+    """Return True if the incident caused real degradation.
+
+    Statuspage admins sometimes set impact="none" even when components were
+    actually degraded, so the primary check is incident_updates.affected_components
+    rather than the top-level impact field.
+    """
+    for update in incident.get("incident_updates", []):
+        for aff in update.get("affected_components", []):
+            if aff.get("new_status") in _DEGRADED:
+                if component_id is None:
+                    return True
+                # Match by UUID id, short code, or display name
+                if (
+                    aff.get("id") == component_id
+                    or aff.get("code") == component_id
+                    or (component_name and aff.get("name", "").lower() == component_name.lower())
+                ):
+                    return True
+
+    # Fallback: incident-level impact field (for incidents without update details)
+    if incident.get("impact") not in ("none", None):
+        if component_id is None:
+            return True
+        for comp in incident.get("components", []):
+            if comp.get("id") == component_id:
+                return True
+
+    return False
+
+
+def _uptime_pct(
+    incidents: list[dict],
+    days: int,
+    component_id: str | None = None,
+    component_name: str | None = None,
+) -> float | None:
     if incidents is None:
         return None
     now = datetime.now(timezone.utc)
@@ -35,12 +80,8 @@ def _uptime_pct(incidents: list[dict], days: int, component_id: str | None = Non
     downtime = 0.0
 
     for inc in incidents:
-        if inc.get("impact") in ("none", None):
+        if not _incident_has_downtime(inc, component_id, component_name):
             continue
-        if component_id is not None:
-            comps = inc.get("components") or []
-            if not any(c.get("id") == component_id for c in comps):
-                continue
 
         created = _parse_dt(inc.get("created_at"))
         if not created:
@@ -233,10 +274,11 @@ class ClaudeUptimeSensor(
         if not self.coordinator.data:
             return {}
         incidents = self.coordinator.data.get("all_incidents", [])
-        impacting = [i for i in incidents if i.get("impact") not in ("none", None)]
         return {
             "window_days": UPTIME_DAYS,
-            "incidents_in_window": len(impacting),
+            "incidents_in_window": sum(
+                1 for i in incidents if _incident_has_downtime(i)
+            ),
         }
 
 
@@ -256,6 +298,7 @@ class ClaudeComponentUptimeSensor(
     ) -> None:
         super().__init__(coordinator)
         self._component_id = component_id
+        self._component_name = component_name
         self._attr_unique_id = f"claude_uptime_60d_{component_id}"
         self._attr_name = f"{component_name} Uptime {UPTIME_DAYS}d"
         self._attr_device_info = _device_info()
@@ -268,6 +311,7 @@ class ClaudeComponentUptimeSensor(
             self.coordinator.data.get("all_incidents", []),
             UPTIME_DAYS,
             self._component_id,
+            self._component_name,
         )
 
     @property
