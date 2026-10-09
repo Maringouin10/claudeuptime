@@ -7,16 +7,18 @@ SCAN_INTERVAL_SECONDS = 300  # 5 minutes
 UPTIME_DAYS = 60
 
 INDICATOR_STATUS_MAP = {
-    "none": "Operational",
-    "minor": "Minor Issues",
-    "major": "Major Issues",
-    "critical": "Critical",
+    "none": "operational",
+    "minor": "minor",
+    "major": "major",
+    "critical": "critical",
 }
+INDICATOR_OPTIONS = ["operational", "minor", "major", "critical", "unknown"]
 
-COMPONENT_STATUS_MAP = {
-    "operational": "Operational",
-    "degraded_performance": "Degraded Performance",
-    "partial_outage": "Partial Outage",
-    "major_outage": "Major Outage",
-    "under_maintenance": "Under Maintenance",
-}
+COMPONENT_OPTIONS = [
+    "operational",
+    "degraded_performance",
+    "partial_outage",
+    "major_outage",
+    "under_maintenance",
+    "unknown",
+]

@@ -1,5 +1,7 @@
 # Claude Status — Home Assistant Integration
 
+**English** · [Français](README.fr.md)
+
 Monitor Claude AI uptime directly in Home Assistant using the official [status.claude.com](https://status.claude.com) page.
 
 ## Features
@@ -33,7 +35,11 @@ Copy the `custom_components/claude_status` folder into your Home Assistant `cust
 | `sensor.claude_ai_active_incidents` | Sensor | Number of active incidents |
 | `sensor.claude_ai_<component>` | Sensor | Status of each service component |
 
+## Breaking change in 1.1.0
+
+Sensor states are now translatable keys (`operational`, `minor`, `major`, `critical`, `degraded_performance`, …) shown translated in the UI (English/French). Update automations that compared against `"Operational"` or `"Major Issues"`.
+
 ## Minimum Requirements
 
-- Home Assistant 2023.3.0 or newer
+- Home Assistant 2024.4.0 or newer
 - Internet access to reach `status.claude.com`

@@ -12,5 +12,44 @@
     "abort": {
       "already_configured": "Claude Status is already configured."
     }
+  },
+  "entity": {
+    "binary_sensor": {
+      "operational": {
+        "name": "Operational"
+      }
+    },
+    "sensor": {
+      "overall_status": {
+        "name": "Overall status",
+        "state": {
+          "operational": "Operational",
+          "minor": "Minor issues",
+          "major": "Major issues",
+          "critical": "Critical",
+          "unknown": "Unknown"
+        }
+      },
+      "active_incidents": {
+        "name": "Active incidents"
+      },
+      "uptime": {
+        "name": "Uptime {days}d"
+      },
+      "component_status": {
+        "name": "{component}",
+        "state": {
+          "operational": "Operational",
+          "degraded_performance": "Degraded performance",
+          "partial_outage": "Partial outage",
+          "major_outage": "Major outage",
+          "under_maintenance": "Under maintenance",
+          "unknown": "Unknown"
+        }
+      },
+      "component_uptime": {
+        "name": "{component} uptime {days}d"
+      }
+    }
   }
 }

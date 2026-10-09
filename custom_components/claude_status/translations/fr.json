@@ -1,0 +1,55 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Moniteur d'état de Claude",
+        "description": "Ajoutez la surveillance de l'état de Claude AI à Home Assistant. Aucun identifiant requis."
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de joindre la page d'état de Claude. Vérifiez votre connexion Internet."
+    },
+    "abort": {
+      "already_configured": "Claude Status est déjà configuré."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "operational": {
+        "name": "Opérationnel"
+      }
+    },
+    "sensor": {
+      "overall_status": {
+        "name": "État général",
+        "state": {
+          "operational": "Opérationnel",
+          "minor": "Problèmes mineurs",
+          "major": "Problèmes majeurs",
+          "critical": "Critique",
+          "unknown": "Inconnu"
+        }
+      },
+      "active_incidents": {
+        "name": "Incidents actifs"
+      },
+      "uptime": {
+        "name": "Disponibilité sur {days} j"
+      },
+      "component_status": {
+        "name": "{component}",
+        "state": {
+          "operational": "Opérationnel",
+          "degraded_performance": "Performance dégradée",
+          "partial_outage": "Panne partielle",
+          "major_outage": "Panne majeure",
+          "under_maintenance": "En maintenance",
+          "unknown": "Inconnu"
+        }
+      },
+      "component_uptime": {
+        "name": "{component} – disponibilité sur {days} j"
+      }
+    }
+  }
+}
