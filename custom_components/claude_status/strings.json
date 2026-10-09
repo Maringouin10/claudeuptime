@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Claude Status Monitor",
-        "description": "Add Claude AI status monitoring to Home Assistant. No credentials required."
+        "description": "Add Claude AI status monitoring to Home Assistant. No credentials required. No personal data is collected; the integration only sends anonymous requests to status.claude.com (your IP address is visible to that server)."
       }
     },
     "error": {
@@ -11,6 +11,43 @@
     },
     "abort": {
       "already_configured": "Claude Status is already configured."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "operational": {
+        "name": "Operational"
+      }
+    },
+    "sensor": {
+      "overall_status": {
+        "name": "Overall status",
+        "state": {
+          "operational": "Operational",
+          "minor_issues": "Minor issues",
+          "major_issues": "Major issues",
+          "critical": "Critical"
+        }
+      },
+      "active_incidents": {
+        "name": "Active incidents",
+        "unit_of_measurement": "incidents"
+      },
+      "uptime": {
+        "name": "Uptime {days}d"
+      },
+      "component_uptime": {
+        "name": "{component} uptime {days}d"
+      },
+      "component_status": {
+        "state": {
+          "operational": "Operational",
+          "degraded_performance": "Degraded performance",
+          "partial_outage": "Partial outage",
+          "major_outage": "Major outage",
+          "under_maintenance": "Under maintenance"
+        }
+      }
     }
   }
 }

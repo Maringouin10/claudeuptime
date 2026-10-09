@@ -1,5 +1,7 @@
 # Claude Status — Home Assistant Integration
 
+*Version française : [README.fr.md](README.fr.md)*
+
 Monitor Claude AI uptime directly in Home Assistant using the official [status.claude.com](https://status.claude.com) page.
 
 ## Features
@@ -37,3 +39,15 @@ Copy the `custom_components/claude_status` folder into your Home Assistant `cust
 
 - Home Assistant 2023.3.0 or newer
 - Internet access to reach `status.claude.com`
+
+## Language support
+
+The UI (config flow, entity names and states) is available in English and French (Quebec). 
+
+## Privacy
+
+This integration collects, stores and shares no personal information and needs no credentials. It only makes anonymous public HTTPS requests to `status.claude.com` (that server can see your Home Assistant IP address). Nothing is sent to the integration's author.
+
+## Breaking change in 1.1.0
+
+Sensor states are now stable translation keys (`operational`, `minor_issues`, `major_issues`, `critical`, `degraded_performance`, `partial_outage`, `major_outage`, `under_maintenance`) instead of English text. Update automations that compared against e.g. "Operational".

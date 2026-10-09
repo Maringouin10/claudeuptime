@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
@@ -139,7 +139,9 @@ class ClaudeOverallStatusSensor(
 ):
     _attr_has_entity_name = True
     _attr_unique_id = "claude_overall_status"
-    _attr_name = "Overall Status"
+    _attr_translation_key = "overall_status"
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_options = list(INDICATOR_STATUS_MAP.values())
     _attr_icon = "mdi:robot"
 
     def __init__(self, coordinator: ClaudeStatusCoordinator) -> None:
@@ -151,7 +153,7 @@ class ClaudeOverallStatusSensor(
         if not self.coordinator.data:
             return None
         indicator = self.coordinator.data.get("status", {}).get("indicator", "none")
-        return INDICATOR_STATUS_MAP.get(indicator, indicator)
+        return INDICATOR_STATUS_MAP.get(indicator)
 
     @property
     def extra_state_attributes(self) -> dict:
@@ -171,9 +173,8 @@ class ClaudeIncidentCountSensor(
 ):
     _attr_has_entity_name = True
     _attr_unique_id = "claude_active_incidents"
-    _attr_name = "Active Incidents"
+    _attr_translation_key = "active_incidents"
     _attr_icon = "mdi:alert-circle-outline"
-    _attr_native_unit_of_measurement = "incidents"
 
     def __init__(self, coordinator: ClaudeStatusCoordinator) -> None:
         super().__init__(coordinator)
@@ -208,6 +209,9 @@ class ClaudeComponentSensor(
 ):
     _attr_has_entity_name = True
     _attr_icon = "mdi:server"
+    _attr_translation_key = "component_status"
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_options = list(COMPONENT_STATUS_MAP.values())
 
     def __init__(
         self,
@@ -235,7 +239,7 @@ class ClaudeComponentSensor(
         if not component:
             return None
         status = component.get("status", "unknown")
-        return COMPONENT_STATUS_MAP.get(status, status.replace("_", " ").title())
+        return COMPONENT_STATUS_MAP.get(status)
 
     @property
     def extra_state_attributes(self) -> dict:
@@ -254,7 +258,8 @@ class ClaudeUptimeSensor(
 ):
     _attr_has_entity_name = True
     _attr_unique_id = "claude_uptime_60d"
-    _attr_name = f"Uptime {UPTIME_DAYS}d"
+    _attr_translation_key = "uptime"
+    _attr_translation_placeholders = {"days": str(UPTIME_DAYS)}
     _attr_icon = "mdi:chart-timeline-variant"
     _attr_native_unit_of_measurement = "%"
     _attr_suggested_display_precision = 3
@@ -300,7 +305,11 @@ class ClaudeComponentUptimeSensor(
         self._component_id = component_id
         self._component_name = component_name
         self._attr_unique_id = f"claude_uptime_60d_{component_id}"
-        self._attr_name = f"{component_name} Uptime {UPTIME_DAYS}d"
+        self._attr_translation_key = "component_uptime"
+        self._attr_translation_placeholders = {
+            "component": component_name,
+            "days": str(UPTIME_DAYS),
+        }
         self._attr_device_info = _device_info()
 
     @property
