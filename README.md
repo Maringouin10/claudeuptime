@@ -1,5 +1,7 @@
 # Claude Status — Home Assistant Integration
 
+🇫🇷 [Version française](README.fr.md)
+
 Monitor Claude AI uptime directly in Home Assistant using the official [status.claude.com](https://status.claude.com) page.
 
 ## Features
@@ -37,3 +39,11 @@ Copy the `custom_components/claude_status` folder into your Home Assistant `cust
 
 - Home Assistant 2023.3.0 or newer
 - Internet access to reach `status.claude.com`
+
+## Privacy
+
+This integration does not collect, store or transmit any personal information. It only reads the public Statuspage API of `status.claude.com`; no account, credential or user identifier is involved. This is consistent with Quebec's Law 25 (*Act respecting the protection of personal information in the private sector*).
+
+## Language
+
+The integration is available in English and French (Charter of the French language). Entity names, states and configuration screens follow the Home Assistant language setting.

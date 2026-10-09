@@ -9,7 +9,15 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import COMPONENT_STATUS_MAP, DOMAIN, INDICATOR_STATUS_MAP, UPTIME_DAYS
+from .const import (
+    COMPONENT_STATUS_MAP,
+    COMPONENT_STATUS_MAP_FR,
+    DOMAIN,
+    INDICATOR_STATUS_MAP,
+    INDICATOR_STATUS_MAP_FR,
+    UPTIME_DAYS,
+    is_french,
+)
 from .coordinator import ClaudeStatusCoordinator
 
 
@@ -139,7 +147,7 @@ class ClaudeOverallStatusSensor(
 ):
     _attr_has_entity_name = True
     _attr_unique_id = "claude_overall_status"
-    _attr_name = "Overall Status"
+    _attr_translation_key = "overall_status"
     _attr_icon = "mdi:robot"
 
     def __init__(self, coordinator: ClaudeStatusCoordinator) -> None:
@@ -151,7 +159,12 @@ class ClaudeOverallStatusSensor(
         if not self.coordinator.data:
             return None
         indicator = self.coordinator.data.get("status", {}).get("indicator", "none")
-        return INDICATOR_STATUS_MAP.get(indicator, indicator)
+        status_map = (
+            INDICATOR_STATUS_MAP_FR
+            if is_french(self.coordinator.hass.config.language)
+            else INDICATOR_STATUS_MAP
+        )
+        return status_map.get(indicator, indicator)
 
     @property
     def extra_state_attributes(self) -> dict:
@@ -171,7 +184,7 @@ class ClaudeIncidentCountSensor(
 ):
     _attr_has_entity_name = True
     _attr_unique_id = "claude_active_incidents"
-    _attr_name = "Active Incidents"
+    _attr_translation_key = "active_incidents"
     _attr_icon = "mdi:alert-circle-outline"
     _attr_native_unit_of_measurement = "incidents"
 
@@ -235,7 +248,12 @@ class ClaudeComponentSensor(
         if not component:
             return None
         status = component.get("status", "unknown")
-        return COMPONENT_STATUS_MAP.get(status, status.replace("_", " ").title())
+        status_map = (
+            COMPONENT_STATUS_MAP_FR
+            if is_french(self.coordinator.hass.config.language)
+            else COMPONENT_STATUS_MAP
+        )
+        return status_map.get(status, status.replace("_", " ").title())
 
     @property
     def extra_state_attributes(self) -> dict:
@@ -254,7 +272,7 @@ class ClaudeUptimeSensor(
 ):
     _attr_has_entity_name = True
     _attr_unique_id = "claude_uptime_60d"
-    _attr_name = f"Uptime {UPTIME_DAYS}d"
+    _attr_translation_key = "uptime_60d"
     _attr_icon = "mdi:chart-timeline-variant"
     _attr_native_unit_of_measurement = "%"
     _attr_suggested_display_precision = 3
@@ -300,7 +318,12 @@ class ClaudeComponentUptimeSensor(
         self._component_id = component_id
         self._component_name = component_name
         self._attr_unique_id = f"claude_uptime_60d_{component_id}"
-        self._attr_name = f"{component_name} Uptime {UPTIME_DAYS}d"
+        suffix = (
+            f"Disponibilité {UPTIME_DAYS} j"
+            if is_french(coordinator.hass.config.language)
+            else f"Uptime {UPTIME_DAYS}d"
+        )
+        self._attr_name = f"{component_name} {suffix}"
         self._attr_device_info = _device_info()
 
     @property

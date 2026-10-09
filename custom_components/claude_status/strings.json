@@ -12,5 +12,23 @@
     "abort": {
       "already_configured": "Claude Status is already configured."
     }
+  },
+  "entity": {
+    "sensor": {
+      "overall_status": {
+        "name": "Overall Status"
+      },
+      "active_incidents": {
+        "name": "Active Incidents"
+      },
+      "uptime_60d": {
+        "name": "Uptime 60d"
+      }
+    },
+    "binary_sensor": {
+      "operational": {
+        "name": "Operational"
+      }
+    }
   }
 }

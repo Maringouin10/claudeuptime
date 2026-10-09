@@ -1,0 +1,34 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Moniteur d'état de Claude",
+        "description": "Ajoutez la surveillance de l'état de Claude AI à Home Assistant. Aucun identifiant requis. Aucun renseignement personnel n'est collecté : seules les données publiques de status.claude.com sont consultées."
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de joindre la page d'état de Claude. Vérifiez votre connexion Internet."
+    },
+    "abort": {
+      "already_configured": "Claude Status est déjà configuré."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overall_status": {
+        "name": "État général"
+      },
+      "active_incidents": {
+        "name": "Incidents actifs"
+      },
+      "uptime_60d": {
+        "name": "Disponibilité 60 j"
+      }
+    },
+    "binary_sensor": {
+      "operational": {
+        "name": "Opérationnel"
+      }
+    }
+  }
+}

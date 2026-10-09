@@ -29,7 +29,7 @@ class ClaudeOperationalSensor(
     _attr_has_entity_name = True
     _attr_device_class = BinarySensorDeviceClass.CONNECTIVITY
     _attr_unique_id = "claude_operational"
-    _attr_name = "Operational"
+    _attr_translation_key = "operational"
 
     def __init__(self, coordinator: ClaudeStatusCoordinator) -> None:
         super().__init__(coordinator)
